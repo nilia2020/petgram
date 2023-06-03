@@ -11,4 +11,4 @@ Lighthouse
 Cypress
 React Helmet
 Progressive Web App
-Deploy con now
+Deploy con vercel

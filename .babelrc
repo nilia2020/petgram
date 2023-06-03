@@ -1,0 +1,11 @@
+{
+    "presets": [
+        "@babel/preset-env", //permite compatibilidad
+        [
+            "@babel/preset-react",
+            {
+                "runtime": "automatic"
+            }
+        ]
+    ] //Permite trabajar con react
+}
