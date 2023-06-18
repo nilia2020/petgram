@@ -1,22 +1,16 @@
 import { PhotoCard } from "../PhotoCard";
-import { useQuery, gql } from "@apollo/client";
-import { getPhotos } from "../../hooks/useGetPhotos";
+import { useGetPhotos } from "../../hooks/useGetPhotos";
 
 export const ListOfPhotoCards = ({ categoryId }) => {
-  const { loading, error, data } = useQuery(getPhotos, {
-    variables: { categoryId },
-  });
-  if (error) {
-    return <h2>Internal Server Error</h2>;
-  }
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
+  const { loading, error, data } = useGetPhotos(categoryId);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>error...</p>;
 
   return (
     <ul>
       {data.photos.map((photo) => (
-        <PhotoCard key={photo.id} {...photo} />
+        <PhotoCard key={photo.id} id={photo.id} {...photo} />
       ))}
     </ul>
   );
