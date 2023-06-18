@@ -48,6 +48,9 @@ server.applyMiddleware({ app, path: "/graphql" });
 app.get("/categories", function (req, res) {
   res.send(categories);
 });
+app.get("/photos", function (req, res) {
+  res.send(photos);
+});
 
 if (!process.env.NOW_REGION) {
   app.listen(PORT, () => {
