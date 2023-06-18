@@ -10,6 +10,7 @@ process.env.JWT_SECRET = process.env.JWT_SECRET || "somereallylongsecretkey";
 const PORT = process.env.PORT || 3500;
 const app = express();
 const { categories } = require("./db.json");
+const { photos } = require("./db.json");
 
 app.use(cors());
 

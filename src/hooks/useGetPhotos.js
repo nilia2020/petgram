@@ -7,8 +7,8 @@ export const getPhotos = gql`
       categoryId
       src
       likes
-      userId
       liked
+      userId
     }
   }
 `;
