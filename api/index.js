@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { ApolloServer } = require("@apollo/server");
+const { ApolloServer } = require("apollo-server-express");
 const { resolvers, typeDefs } = require("./schema");
 const jwt = require("express-jwt");
 
@@ -8,11 +8,9 @@ const jwt = require("express-jwt");
 process.env.JWT_SECRET = process.env.JWT_SECRET || "somereallylongsecretkey";
 
 const PORT = process.env.PORT || 3500;
-const app = express();
+
 const { categories } = require("./db.json");
 const { photos } = require("./db.json");
-
-app.use(cors());
 
 // auth middleware
 const auth = jwt({
@@ -21,41 +19,44 @@ const auth = jwt({
 });
 
 require("./adapter");
-
-const server = new ApolloServer({
-  introspection: true, // do this only for dev purposes
-  playground: true, // do this only for dev purposes
-  typeDefs,
-  resolvers,
-  context: ({ req }) => {
-    const { id, email } = req.user || {};
-    return { id, email };
-  },
-});
-
-app.use(auth);
-
-const errorHandler = (err, req, res, next) => {
-  if (res.headersSent) {
-    return next(err);
-  }
-  const { status } = err;
-  res.status(status).json(err);
-};
-app.use(errorHandler);
-server.applyMiddleware({ app, path: "/graphql" });
-
-app.get("/categories", function (req, res) {
-  res.send(categories);
-});
-app.get("/photos", function (req, res) {
-  res.send(photos);
-});
-
-if (!process.env.NOW_REGION) {
-  app.listen(PORT, () => {
-    console.log(`Listening at http://localhost:${PORT}/graphql`);
+async function startApolloServer() {
+  const app = express();
+  const server = new ApolloServer({
+    introspection: true, // do this only for dev purposes
+    playground: true, // do this only for dev purposes
+    typeDefs,
+    resolvers,
+    context: ({ req }) => {
+      const { id, email } = req.user || {};
+      return { id, email };
+    },
   });
-}
+  await server.start();
+  server.applyMiddleware({ app });
+  app.use((req, res) => {
+    res.status(200);
+    res.send("Hello!");
+    res.end();
+  });
+  app.use(cors(), auth);
+  const errorHandler = (err, req, res, next) => {
+    if (res.headersSent) {
+      return next(err);
+    }
+    const { status } = err;
+    res.status(status).json(err);
+  };
+  app.use(errorHandler);
 
-module.exports = app;
+  app.get("/categories", function (req, res) {
+    res.send(categories);
+  });
+  app.get("/photos", function (req, res) {
+    res.send(photos);
+  });
+
+  await new Promise((resolve) => app.listen({ port: 3500 }, resolve));
+  console.log(`🚀 Server ready at http://localhost:3500${server.graphqlPath}`);
+  return { server, app };
+}
+startApolloServer();

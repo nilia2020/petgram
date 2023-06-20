@@ -1,7 +1,7 @@
 const userModel = require("./models/userModel");
 const categoriesModel = require("./models/categoriesModel");
 const photosModel = require("./models/photosModel");
-const { gql } = require("@apollo/server");
+const { gql } = require("graphql-tag");
 const jsonwebtoken = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
