@@ -55,11 +55,7 @@ async function startApolloServer() {
     res.send(photos);
   });
 
-  await new Promise((resolve) => {
-    if (!process.env.NOW_REGION) {
-      app.listen({ port: PORT }, resolve);
-    }
-  });
+  await new Promise((resolve) => app.listen({ port: PORT }, resolve));
   console.log(
     `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
   );
