@@ -17,10 +17,24 @@ const auth = jwt({
   secret: process.env.JWT_SECRET,
   credentialsRequired: false,
 });
-
 require("./adapter");
+const errorHandler = (err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err);
+  }
+  const { status } = err;
+  res.status(status).json(err);
+};
+app.use(errorHandler);
+
 async function startApolloServer() {
   const app = express();
+  app.use(cors(), auth);
+  app.use((req, res) => {
+    res.status(200);
+    res.send("Hello!");
+    res.end();
+  });
   const server = new ApolloServer({
     introspection: true, // do this only for dev purposes
     playground: true, // do this only for dev purposes
@@ -33,20 +47,6 @@ async function startApolloServer() {
   });
   await server.start();
   server.applyMiddleware({ app });
-  app.use((req, res) => {
-    res.status(200);
-    res.send("Hello!");
-    res.end();
-  });
-  app.use(cors(), auth);
-  const errorHandler = (err, req, res, next) => {
-    if (res.headersSent) {
-      return next(err);
-    }
-    const { status } = err;
-    res.status(status).json(err);
-  };
-  app.use(errorHandler);
 
   app.get("/categories", function (req, res) {
     res.send(categories);
@@ -55,7 +55,11 @@ async function startApolloServer() {
     res.send(photos);
   });
 
-  await new Promise((resolve) => app.listen({ port: PORT }, resolve));
+  await new Promise((resolve) => {
+    if (!process.env.NOW_REGION) {
+      app.listen({ port: PORT }, resolve);
+    }
+  });
   console.log(
     `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
   );
