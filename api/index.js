@@ -3,6 +3,7 @@ const cors = require("cors");
 const { ApolloServer } = require("apollo-server-express");
 const { resolvers, typeDefs } = require("./schema");
 const jwt = require("express-jwt");
+const { InMemoryLRUCache } = require("@apollo/utils.keyvaluecache");
 
 // this is not secure! this is for dev purposes
 process.env.JWT_SECRET = process.env.JWT_SECRET || "somereallylongsecretkey";
@@ -17,25 +18,12 @@ const auth = jwt({
   secret: process.env.JWT_SECRET,
   credentialsRequired: false,
 });
-require("./adapter");
-const errorHandler = (err, req, res, next) => {
-  if (res.headersSent) {
-    return next(err);
-  }
-  const { status } = err;
-  res.status(status).json(err);
-};
-app.use(errorHandler);
 
+require("./adapter");
 async function startApolloServer() {
   const app = express();
-  app.use(cors(), auth);
-  app.use((req, res) => {
-    res.status(200);
-    res.send("Hello!");
-    res.end();
-  });
   const server = new ApolloServer({
+    cache: new InMemoryLRUCache(),
     introspection: true, // do this only for dev purposes
     playground: true, // do this only for dev purposes
     typeDefs,
@@ -47,11 +35,25 @@ async function startApolloServer() {
   });
   await server.start();
   server.applyMiddleware({ app });
+  app.use((req, res) => {
+    res.status(200);
+    res.send("Hello!");
+    res.end();
+  });
+  app.use(cors(), auth);
+  const errorHandler = (err, req, res, next) => {
+    if (res.headersSent) {
+      return next(err);
+    }
+    const { status } = err;
+    res.status(status).json(err);
+  };
+  app.use(errorHandler);
 
-  app.get("/categories", function (req, res) {
+  app.get("/graphql/categories", function (req, res) {
     res.send(categories);
   });
-  app.get("/photos", function (req, res) {
+  app.get("/graphql/photos", function (req, res) {
     res.send(photos);
   });
 
