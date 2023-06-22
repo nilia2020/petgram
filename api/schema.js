@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 
 const typeDefs = gql`
   type User {
-    id: ID
+    id: ID!
     avatar: String
     name: String
     email: String
@@ -15,7 +15,7 @@ const typeDefs = gql`
   }
 
   type Photo {
-    id: ID
+    id: ID!
     categoryId: Int
     src: String
     likes: Int
@@ -24,7 +24,7 @@ const typeDefs = gql`
   }
 
   type Category {
-    id: ID
+    id: ID!
     cover: String
     name: String
     emoji: String
