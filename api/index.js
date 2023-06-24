@@ -58,9 +58,7 @@ async function startApolloServer() {
   });
 
   await new Promise((resolve) => app.listen({ port: PORT }, resolve));
-  console.log(
-    `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
-  );
+  console.log(`🚀 Server ready at http://localhost:${PORT}${server}`);
   return { server, app };
 }
 startApolloServer();
