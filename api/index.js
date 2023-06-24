@@ -50,10 +50,10 @@ async function startApolloServer() {
   };
   app.use(errorHandler);
 
-  app.get("/graphql/categories", function (req, res) {
+  app.get("/categories", function (req, res) {
     res.send(categories);
   });
-  app.get("/graphql/photos", function (req, res) {
+  app.get("/photos", function (req, res) {
     res.send(photos);
   });
 
