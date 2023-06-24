@@ -51,10 +51,10 @@ async function startApolloServer() {
   app.use(errorHandler);
 
   app.get("/categories", function (req, res) {
-    res.send(categories);
+    res.json(categories);
   });
   app.get("/photos", function (req, res) {
-    res.send(photos);
+    res.json(photos);
   });
 
   await new Promise((resolve) => app.listen({ port: PORT }, resolve));
