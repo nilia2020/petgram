@@ -6,7 +6,12 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 const DEFAULT_IMAGE =
   "https://images.unsplash.com/photo-1531523668299-e20047c89111?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60";
 
-export const PhotoCard = ({ id, likes = 0, src = DEFAULT_IMAGE }) => {
+export const PhotoCard = ({
+  id,
+  likes = 0,
+  src = DEFAULT_IMAGE,
+  categoryId,
+}) => {
   const key = `like-${id}`;
   const [show, ref] = useNearScreen();
   const [liked, setLiked] = useLocalStorage(key, false);
@@ -25,6 +30,7 @@ export const PhotoCard = ({ id, likes = 0, src = DEFAULT_IMAGE }) => {
             <Icon size={32} color="red" />
             {likes} likes!
           </Button>
+          <p>{categoryId}</p>
         </>
       )}
     </Article>

@@ -8,7 +8,9 @@ const useCategoriesData = () => {
   useEffect(() => {
     setLoading(true);
     window
-      .fetch("https://petgram-server-nilia.vercel.app/categories")
+      .fetch(
+        "https://petgram-server-production.up.railway.app/api/categories/seeall"
+      )
       .then((res) => res.json())
       .then((response) => {
         setCategories(response);
@@ -38,7 +40,7 @@ export const ListOfCategories = () => {
         </Item>
       ) : (
         categories.map((category) => (
-          <Item key={category.id}>
+          <Item key={category._id}>
             <Category {...category} />
           </Item>
         ))

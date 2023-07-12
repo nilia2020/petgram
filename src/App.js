@@ -16,7 +16,7 @@ export const App = () => {
       ) : (
         <>
           <ListOfCategories />
-          <ListOfPhotoCards categoryId={1} />
+          <ListOfPhotoCards categoryId={"649882f954a50624d9398b3f"} />
         </>
       )}
     </>
